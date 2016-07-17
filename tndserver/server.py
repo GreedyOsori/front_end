@@ -8,7 +8,7 @@ define("port", default=8888, help="run on the given port", type=int)
 
 # we gonna store clients in list..
 clients = list()
-
+# 
 class IndexHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
