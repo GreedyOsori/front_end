@@ -1,35 +1,56 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <input type="button" id="hw" value="Hello world" />
-        <input type="text" id="send_message" />
-        <div id="messages" style="height:200px;width:500px;background:black;color:white;overflow-y:auto;"></div>
+        <input type="button" id="id_conn_btn" value="connect websocket" />
+        <input type="text" id="id_conn_id" />
+        <br>
+        <input type="button" id="id_send_btn" value="send message" />
+        <input type="text" id="id_send_message" />
+        <br>
+        <div id="id_messages" style="height:200px;width:500px;background:black;color:white;overflow-y:auto;"></div>
         <script type="text/javascript">
-            var hw = document.getElementById('hw');
-            var messageContainer = document.getElementById('messages');
-            var sendText = document.getElementById('send_message');
-            var message = "";
+            var messageContainer = document.getElementById('id_messages');
+
             if ("WebSocket" in window) {
-                    messageContainer.innerHTML = "WebSocket is supported by your Browser!";
-                    var ws = new WebSocket("ws://localhost:8888/websocket");
-                    ws.onmessage = function (evt) {
-                        var received_msg = evt.data;
-                        message += ">> " + received_msg + "<br>";
-                        messageContainer.innerHTML = message;
-                    };
-            }
-            else {
-                    messageContainer.innerHTML = "WebSocket NOT supported by your Browser!";
-            }
-            hw.addEventListener('click', function(){
-                if ("WebSocket" in window) {
-                    ws.send( sendText.value );
+                var btnConn = document.getElementById('id_conn_btn');
+                var textID = document.getElementById('id_conn_id');
+                var btnSend = document.getElementById('id_send_btn');
+                var textMessage = document.getElementById('id_send_message');
+                var message = "";
+
+                btnSend.disabled = 'disabled';
+                textMessage.disabled = 'disabled';
+
+                messageContainer.innerHTML = "WebSocket is supported by your Browser!";
+                var ws = new WebSocket("ws://localhost:8888/websocket");
+                ws.onmessage = function (evt) {
+                    var received_msg = evt.data;
+                    message += ">> " + received_msg + "<br>";
+                    messageContainer.innerHTML = message;
+                };
+
+                <!-- connect websocket button handler -->
+                btnConn.addEventListener('click', function(){
+                    var json = new Object();
+                    json.msg = "connect";
+                    json.id = textID.value;
+                    var req = JSON.stringify(json);
+                    ws.send( req );
+                });
+
+                <!-- send message button handler -->
+                btnSend.addEventListener('click', function(){
+                    ws.send( textMessage.value );
                     ws.onclose = function() {
                         message = "";
                         messageContainer.innerHTML = "Connection is closed...";
-                    };
-                }
-            })
+                    }
+                });
+            }
+            else
+            {
+                messageContainer.innerHTML = "WebSocket NOT supported by your Browser!";
+            }
         </script>
     </body>
 </html>
