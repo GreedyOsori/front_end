@@ -32,7 +32,7 @@
                 <!-- connect websocket button handler -->
                 btnConn.addEventListener('click', function(){
                     var json = new Object();
-                    json.msg = "connect";
+                    json.msg = "request_user_list";
                     json.id = textID.value;
                     var req = JSON.stringify(json);
                     ws.send( req );

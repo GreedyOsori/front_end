@@ -26,12 +26,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         js = json.loads(message)
-        if js['msg'] == 'connect' :
+        if js['msg'] == 'request_user_list' :
             self.id = js['id']
             clients.append(self)
 
             # send adduser msg to existed clients
-            dictAddUser = {'msg':'adduser'}
+            dictAddUser = {'msg':'notice_user_added'}
             dictAddUser['id'] = js['id']
             msgAddUser = json.dumps(dictAddUser)
             for client in clients :
@@ -39,7 +39,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     client.write_message(msgAddUser)
 
             # send alluser msg to new client
-            dictAllUser = {'msg':'alluser'}
+            dictAllUser = {'msg':'response_user_list'}
             dictAllUser['num'] = len(clients)
 
             i = 0
@@ -58,7 +58,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             clients.remove(self)
 
             # send deluser msg to existed clients
-            dictDelUser = {'msg': 'deluser'}
+            dictDelUser = {'msg': 'notice_user_removed'}
             dictDelUser['id'] = self.id
             msgDelUser = json.dumps(dictDelUser)
             for client in clients:
