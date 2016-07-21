@@ -91,10 +91,58 @@
         <ul id="navigation">
         </ul>
         <br>
+        <button id="Submit" disabled="">submit</button>
+        <br>
         <div id="id_messages" style="height:200px;width:500px;background:black;color:white;overflow-y:auto;"></div>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="text/javascript">
+            var list = [];
             var messageContainer = document.getElementById('id_messages');
+
+            function checkSelected(){
+				var count = 0;
+				var nav = document.getElementById('navigation');
+				for(var i=0; i<nav.childNodes.length; i++){
+					var child = nav.childNodes[i];
+					if (child.className == 'selected')
+						count++;
+				}
+				return count;
+			}
+
+            function clickHandler(event) {
+                var nav = document.getElementById('navigation');
+                var button = document.getElementById('Submit');
+                button.disabled='true';
+                if (event.target.className == 'selected'){
+                    event.target.className = '';
+                }
+                else {
+                    if (checkSelected()<2){
+                        event.target.className = 'selected';
+                    }
+                }
+
+                if (checkSelected()>=2)
+                    button.removeAttribute('disabled');
+            }
+
+            function getSelected(){
+                var nav = document.getElementById('navigation');
+                var selectedUser = [];
+                for (var i=0; i<nav.childNodes.length; i++){
+                    var child = nav.childNodes[i];
+                    if (child.className == 'selected'){
+                        selectedUser.push(child.innerText);
+                    }
+                }
+                var json = new Object();
+                json.msg = "request_match";
+                json.id1 = selectedUser[0];
+                json.id2 = selectedUser[1];
+                var req = JSON.stringify(json);
+                ws.send( req );
+            }
 
             if ("WebSocket" in window) {
                 var btnConn = document.getElementById('id_conn_btn');
@@ -110,14 +158,54 @@
 
                     var data = jQuery.parseJSON(received_msg);
 
-                    console.log(data.msg);
-                    console.log(data.num);
-                    console.log(data.users);
-
-                    $.each(data.users, function(key) {
-                        console.log(data.users[key]);
-                    })
-                };
+                    if (data.msg == "response_user_list") {
+                        $.each(data.users, function (key) {
+                            var nav = document.getElementById('navigation');
+                            var text = data.users[key];
+                            for (var i = 0; i < nav.childNodes.length; i++) {
+                                var child = nav.childNodes[i];
+                                if (text == child.innerText)
+                                    return;
+                            }
+                            if (text.length) {
+                                $('<li />', {html: text}).bind('click', clickHandler).appendTo('#navigation')
+                                list.push(text);
+                            }
+                        })
+                    }
+                    else {
+                        if (data.msg == "notice_user_added") {
+                            var nav = document.getElementById('navigation');
+                            var text = data.id;
+                            for (var i = 0; i < nav.childNodes.length; i++) {
+                                var child = nav.childNodes[i];
+                                if (text == child.innerText)
+                                    return;
+                            }
+                            if (text.length) {
+                                $('<li />', {html: text}).bind('click', clickHandler).appendTo('#navigation')
+                                list.push(text);
+                            }
+                        }
+                        else {
+                            if (data.msg == "notice_user_removed") {
+                                var nav = document.getElementById('navigation');
+                                var button = document.getElementById('Submit');
+                                var text = data.id;
+                                for (var i = 0; i < nav.childNodes.length; i++) {
+                                    var child = nav.childNodes[i];
+                                    if (text == child.innerText) {
+                                        child.remove();
+                                        list.splice((i - 1), 1);
+                                        if (checkSelected()<2)
+							                button.disabled='true';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $('#Submit').bind('click',getSelected);
 
                 <!-- connect websocket button handler -->
                 btnConn.addEventListener('click', function(){
@@ -131,7 +219,7 @@
                 ws.onclose = function() {
                         message = "";
                         messageContainer.innerHTML = "Connection is closed...";
-                    }
+                }
             }
             else
             {
