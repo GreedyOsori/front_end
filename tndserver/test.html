@@ -21,7 +21,7 @@
 		<input type="test" id="inputName" />
 		<button id="btnName">Click me!</button></br>
 		<input type="test" id="removeName" />
-		<button id="btnRemove">remove</button></br>
+		<button id="btnRemove">remove</button>
         <button id="Submit" disabled="">submit</button>
 
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
@@ -47,41 +47,44 @@
 
 			$('#btnRemove').click(function(){
                 var nav = document.getElementById('navigation');
+				var button = document.getElementById('Submit');
 				var text = $('#removeName').val();
 				for(var i=0; i<nav.childNodes.length; i++){
 					var child = nav.childNodes[i];
-					if(text == child.innerText){
+					if (text == child.innerText){
 						child.remove();
 						list.splice((i-1),1);
+						if (checkSelected()<2)
+							button.disabled='true';
 					}
 				}
 			});
 
+			function checkSelected(){
+				var count = 0;
+				var nav = document.getElementById('navigation');
+				for(var i=0; i<nav.childNodes.length; i++){
+					var child = nav.childNodes[i];
+					if (child.className == 'selected')
+						count++;
+				}
+				return count;
+			}
+
             function clickHandler(event) {
                 var nav = document.getElementById('navigation');
-                var count = 0;
                 var button = document.getElementById('Submit');
-                button.disabled='disabled';
-                for(var i = 0; i < nav.childNodes.length; i++) {
-                    var child = nav.childNodes[i];
-                    if(child.nodeType==3)
-                        continue;
-                    if (child.className == 'selected')
-                        count++;
-                }
+                button.disabled='true';
                 if (event.target.className == 'selected'){
                     event.target.className = '';
-                    count--;
                 }
                 else {
-                    if (count<2){
+                    if (checkSelected()<2){
                         event.target.className = 'selected';
-                        count++;
                     }
                 }
-                if (count>=2)
+                if (checkSelected()>=2)
                     button.removeAttribute('disabled');
-
             }
         </script>
     </body>
