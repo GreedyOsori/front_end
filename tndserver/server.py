@@ -15,7 +15,7 @@ class IndexHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
         #self.write("This is your response")
-        self.render("index.html")
+        self.render("test.html")
         #we don't need self.finish() because self.render() is fallowed by self.finish() inside tornado
         #self.finish()
 
