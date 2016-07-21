@@ -52,6 +52,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             msgAllUser = json.dumps(dictAllUser)
             self.write_message(msgAllUser)
 
+        elif js['msg'] == 'request_match' :
+            # temp response - response_match
+            id1 = js['id1']
+            id2 = js['id2']
+            dictMatch = {'msg':'response_match', 'error':0, 'id1':id1, 'id2':id2}
+            msgMatch = json.dumps(dictMatch)
+            self.write_message(msgMatch)
+
     def on_close(self):
         print "WebSocketHandler.on_close"
         if self in clients:
