@@ -1,13 +1,61 @@
 <html>
     <head>
-        <script type="text/javascript">
-            function addEvent(target, eventType,eventHandler, useCapture) {
-                if (target.addEventListener) { // W3C DOM
-                    target.addEventListener(eventType,eventHandler,useCapture?useCapture:false);
-                } else if (target.attachEvent) {  // IE DOM
-                    var r = target.attachEvent("on"+eventType, eventHandler);
-                }
+        <style type="text/css">
+            #navigation li {
+                list-style:none;
+				width:100px;
+                padding:5px;
             }
+            #navigation {
+                cursor:pointer;
+            }
+            #navigation .selected {
+                background-color:red;
+                color:white;
+            }
+        </style>
+    </head>
+    <body>
+        <ul id="navigation">
+        </ul>
+		<input type="test" id="inputName" />
+		<button id="btnName">Click me!</button></br>
+		<input type="test" id="removeName" />
+		<button id="btnRemove">remove</button></br>
+        <button id="Submit" disabled="">submit</button>
+
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script type="text/javascript">
+			var list = [];
+			for (var i=0; i<list.length; i++){
+				$('<li />', {html: list[i]}).bind('click',clickHandler).appendTo('#navigation')
+			}
+
+			$('#btnName').click(function(){
+				var nav = document.getElementById('navigation');
+				var text = $('#inputName').val();
+				for(var i=0; i<nav.childNodes.length; i++){
+					var child = nav.childNodes[i];
+					if(text == child.innerText)
+						return;
+				}
+				if(text.length){
+					$('<li />', {html: text}).bind('click',clickHandler).appendTo('#navigation')
+					list.push(text);
+				}
+			});
+
+			$('#btnRemove').click(function(){
+                var nav = document.getElementById('navigation');
+				var text = $('#removeName').val();
+				for(var i=0; i<nav.childNodes.length; i++){
+					var child = nav.childNodes[i];
+					if(text == child.innerText){
+						child.remove();
+						list.splice((i-1),1);
+					}
+				}
+			});
 
             function clickHandler(event) {
                 var nav = document.getElementById('navigation');
@@ -33,42 +81,8 @@
                 }
                 if (count>=2)
                     button.removeAttribute('disabled');
-            }
 
-            addEvent(window, 'load', function(eventObj) {
-                var nav = document.getElementById('navigation');
-                for(var i = 0; i < nav.childNodes.length; i++) {
-                    var child = nav.childNodes[i];
-                    if(child.nodeType==3)
-                        continue;
-                    addEvent(child, 'click', clickHandler);
-                }
-            })
+            }
         </script>
-        <style type="text/css">
-            #navigation li {
-                list-style:none;
-                float:left;
-                padding:5px;
-            }
-            #navigation {
-                cursor:pointer;
-            }
-            #navigation .selected {
-                background-color:red;
-                color:white;
-            }
-        </style>
-    </head>
-    <body>
-        <ul id="navigation">
-            <li class="selected">HTML</li>
-            <li>CSS</li>
-            <li>javascript</li>
-            <li>jQuery</li>
-            <li>PHP</li>
-            <li>mysql</li>
-        </ul>
-        <button id="Submit" disabled="">submit</button>
     </body>
 </html>
