@@ -17,73 +17,7 @@
         </style>
     </head>
     <body>
-<!--
-		<input type="test" id="inputName" />
-		<button id="btnName">Click me!</button></br>
-		<input type="test" id="removeName" />
-		<button id="btnRemove">remove</button></br>
-        <button id="Submit" disabled="">submit</button>
-
-		<script type="text/javascript">
-			var list = [];
-			for (var i=0; i<list.length; i++){
-				$('<li />', {html: list[i]}).bind('click',clickHandler).appendTo('#navigation')
-			}
-
-			$('#btnName').click(function(){
-				var nav = document.getElementById('navigation');
-				var text = $('#inputName').val();
-				for(var i=0; i<nav.childNodes.length; i++){
-					var child = nav.childNodes[i];
-					if(text == child.innerText)
-						return;
-				}
-				if(text.length){
-					$('<li />', {html: text}).bind('click',clickHandler).appendTo('#navigation')
-					list.push(text);
-				}
-			});
-
-			$('#btnRemove').click(function(){
-                var nav = document.getElementById('navigation');
-				var text = $('#removeName').val();
-				for(var i=0; i<nav.childNodes.length; i++){
-					var child = nav.childNodes[i];
-					if(text == child.innerText){
-						child.remove();
-						list.splice((i-1),1);
-					}
-				}
-			});
-
-            function clickHandler(event) {
-                var nav = document.getElementById('navigation');
-                var count = 0;
-                var button = document.getElementById('Submit');
-                button.disabled='disabled';
-                for(var i = 0; i < nav.childNodes.length; i++) {
-                    var child = nav.childNodes[i];
-                    if(child.nodeType==3)
-                        continue;
-                    if (child.className == 'selected')
-                        count++;
-                }
-                if (event.target.className == 'selected'){
-                    event.target.className = '';
-                    count--;
-                }
-                else {
-                    if (count<2){
-                        event.target.className = 'selected';
-                        count++;
-                    }
-                }
-                if (count>=2)
-                    button.removeAttribute('disabled');
-
-            }
-        </script>
--->
+        <canvas id="canvas" width="450" height="450"></canvas>
         <br><br>
         <input type="button" id="id_conn_btn" value="connect websocket" />
         <input type="text" id="id_conn_id" />
@@ -144,6 +78,36 @@
                 ws.send( req );
             }
 
+            var canvas = $("#canvas")[0];
+            var ctx = canvas.getContext("2d");
+
+            ctx.beginPath();
+            for (var i=0; i<9; i++){
+                ctx.moveTo(10,10+(50*i));
+                ctx.lineTo(410,10+(50*i));
+                ctx.stroke();
+            }
+            for (var i=0; i<9; i++){
+                ctx.moveTo(10+(50*i),10);
+                ctx.lineTo(10+(50*i),410);
+                ctx.stroke();
+            }
+            ctx.closePath();
+
+            function drawCircle(x,y,color){
+                ctx.beginPath();
+                //x,y,radius,startAngle,endAngle,anticlockwise
+                var endAngle = Math.PI * 2;
+                ctx.arc(35+(50*x),35+(50*y),25,0,endAngle);
+                if (color == 1)
+                    ctx.fill();
+                else {
+                    if (color == 2)
+                        ctx.stroke();
+                }
+                ctx.closePath();
+            }
+
             if ("WebSocket" in window) {
                 var btnConn = document.getElementById('id_conn_btn');
                 var textID = document.getElementById('id_conn_id');
@@ -201,6 +165,10 @@
 							                button.disabled='true';
                                     }
                                 }
+                            }
+                            else {
+                                if (data.msg == "notice_stone")
+                                        drawCircle(data.x, data.y, data.player);
                             }
                         }
                     }
