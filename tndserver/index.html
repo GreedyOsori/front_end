@@ -104,6 +104,10 @@
                 else {
                     if (color == 2)
                         ctx.stroke();
+                    else {
+                        if (color == 0)
+                            ctx.clearRect(11+(50*x),11+(50*y),48,48);
+                    }
                 }
                 ctx.closePath();
             }
@@ -167,8 +171,15 @@
                                 }
                             }
                             else {
-                                if (data.msg == "notice_stone")
-                                        drawCircle(data.x, data.y, data.player);
+                                if (data.msg == "notice_stone"){
+                                    var y=0;
+                                    $.each(data.board,function(){
+                                        for (var x=0; x<8; x++) {
+                                            drawCircle(x,y,this[x]);
+                                        }
+                                        y++;
+                                    })
+                                }
                             }
                         }
                     }
