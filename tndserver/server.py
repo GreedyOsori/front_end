@@ -15,9 +15,22 @@ class IndexHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
         #self.write("This is your response")
-        self.render("test.html")
+        self.render("index.html")
         #we don't need self.finish() because self.render() is fallowed by self.finish() inside tornado
         #self.finish()
+
+class DummyClientHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("dummy_client.html")
+
+class StoneHandler(tornado.web.RequestHandler):
+    def get(self):
+        id = self.get_argument("id")
+        reqStone = json.dumps({k: self.get_argument(k) for k in self.request.arguments if k != "id"})
+
+        for client in clients:
+            if client.id == id :
+                client.write_message(reqStone)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self, *args):
@@ -75,6 +88,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 app = tornado.web.Application([
     (r'/', IndexHandler),
     (r'/websocket', WebSocketHandler),
+    (r'/dummy_client', DummyClientHandler),
+    (r'/stone', StoneHandler),
 ])
 
 if __name__ == '__main__':

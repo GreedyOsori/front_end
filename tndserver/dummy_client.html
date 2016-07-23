@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    id:
+    <input type="test" id="id_input_id" />
+    <br>
+    player:
+    <input type="test" id="id_input_player" />
+    <br>
+    x:
+    <input type="test" id="id_input_x" />
+    <br>
+    y:
+    <input type="test" id="id_input_y" />
+    <br>
+    <button id="id_btn_stone">돌 놓기</button>
+    </br>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        $('#id_btn_stone').click(function(){
+            var id = $('#id_input_id').val();
+            var player = $('#id_input_player').val();
+            var x = $('#id_input_x').val();
+            var y = $('#id_input_y').val();
+
+            $.get("stone", {id:id, player:player, x:x, y:y});
+        });
+    </script>
+</body>
+</html>
