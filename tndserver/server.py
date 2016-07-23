@@ -26,11 +26,44 @@ class DummyClientHandler(tornado.web.RequestHandler):
 class StoneHandler(tornado.web.RequestHandler):
     def get(self):
         id = self.get_argument("id")
-        reqStone = json.dumps({k: self.get_argument(k) for k in self.request.arguments if k != "id"})
+        params = dict()
+        for k in self.request.arguments:
+            if k != "id" :
+                params[k] = int(self.get_argument(k))
+        params["msg"] = "notice_stone"
+
+        reqStone = json.dumps(params)
+
+        print reqStone
 
         for client in clients:
             if client.id == id :
                 client.write_message(reqStone)
+
+class BoardHandler(tornado.web.RequestHandler):
+    def get(self):
+        id = self.get_argument("id")
+
+        board = list()
+        board.append( [int(i) for i in list(self.get_argument("line1"))] )
+        board.append( [int(i) for i in list(self.get_argument("line2"))] )
+        board.append( [int(i) for i in list(self.get_argument("line3"))] )
+        board.append( [int(i) for i in list(self.get_argument("line4"))] )
+        board.append( [int(i) for i in list(self.get_argument("line5"))] )
+        board.append( [int(i) for i in list(self.get_argument("line6"))] )
+        board.append( [int(i) for i in list(self.get_argument("line7"))] )
+        board.append( [int(i) for i in list(self.get_argument("line8"))] )
+
+        params = dict()
+        params["msg"] = "notice_stone"
+        params["board"] = board
+        reqBoard = json.dumps(params)
+
+        print reqBoard
+
+        for client in clients:
+            if client.id == id :
+                client.write_message(reqBoard)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self, *args):
@@ -90,6 +123,7 @@ app = tornado.web.Application([
     (r'/websocket', WebSocketHandler),
     (r'/dummy_client', DummyClientHandler),
     (r'/stone', StoneHandler),
+    (r'/board', BoardHandler),
 ])
 
 if __name__ == '__main__':

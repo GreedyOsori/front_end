@@ -3,8 +3,13 @@
 <head>
 </head>
 <body>
+    보낼 대상
+    <br>
     id:
     <input type="test" id="id_input_id" />
+    <br>
+    <br>
+    돌 하나 보내기
     <br>
     player:
     <input type="test" id="id_input_player" />
@@ -16,7 +21,20 @@
     <input type="test" id="id_input_y" />
     <br>
     <button id="id_btn_stone">돌 놓기</button>
-    </br>
+    <br>
+    <br>
+    말판 전체 데이터 보내기
+    <br>
+    <input type="test" id="id_input_board_1" /><br>
+    <input type="test" id="id_input_board_2" /><br>
+    <input type="test" id="id_input_board_3" /><br>
+    <input type="test" id="id_input_board_4" /><br>
+    <input type="test" id="id_input_board_5" /><br>
+    <input type="test" id="id_input_board_6" /><br>
+    <input type="test" id="id_input_board_7" /><br>
+    <input type="test" id="id_input_board_8" /><br>
+    <button id="id_btn_board">말판 보내기</button>
+    <br>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript">
@@ -27,6 +45,20 @@
             var y = $('#id_input_y').val();
 
             $.get("stone", {id:id, player:player, x:x, y:y});
+        });
+
+        $('#id_btn_board').click(function(){
+            var id = $('#id_input_id').val();
+            var line1 = $('#id_input_board_1').val();
+            var line2 = $('#id_input_board_2').val();
+            var line3 = $('#id_input_board_3').val();
+            var line4 = $('#id_input_board_4').val();
+            var line5 = $('#id_input_board_5').val();
+            var line6 = $('#id_input_board_6').val();
+            var line7 = $('#id_input_board_7').val();
+            var line8 = $('#id_input_board_8').val();
+
+            $.get("board", {id:id, line1:line1, line2:line2, line3:line3, line4:line4, line5:line5, line6:line6, line7:line7, line8:line8});
         });
     </script>
 </body>
