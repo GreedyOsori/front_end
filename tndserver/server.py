@@ -100,8 +100,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif js['msg'] == 'request_match' :
             # temp response - response_match
-            id1 = js['id1']
-            id2 = js['id2']
+            id1 = js['users'][0]
+            id2 = js['users'][1]
             dictMatch = {'msg':'response_match', 'error':0, 'id1':id1, 'id2':id2}
             msgMatch = json.dumps(dictMatch)
             self.write_message(msgMatch)
