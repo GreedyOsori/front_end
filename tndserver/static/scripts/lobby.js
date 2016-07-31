@@ -78,47 +78,41 @@ if ("WebSocket" in window) {
                 }
             })
         }
-        else {
-            if (data.msg == "notice_user_added") {
-                var nav = document.getElementById('id_list_ul');
-                var text = data.id;
-                for (var i = 0; i < nav.childNodes.length; i++) {
-                    var child = nav.childNodes[i];
-                    if (text == child.innerText)
-                        return;
-                }
-                if (text.length) {
-                    $('<li />', {html: text}).bind('click', clickHandler).appendTo('#id_list_ul')
-                    list.push(text);
+        else if (data.msg == "notice_user_added") {
+            var nav = document.getElementById('id_list_ul');
+            var text = data.id;
+            for (var i = 0; i < nav.childNodes.length; i++) {
+                var child = nav.childNodes[i];
+                if (text == child.innerText)
+                    return;
+            }
+            if (text.length) {
+                $('<li />', {html: text}).bind('click', clickHandler).appendTo('#id_list_ul')
+                list.push(text);
+            }
+        }
+        else if (data.msg == "notice_user_removed") {
+            var nav = document.getElementById('id_list_ul');
+            var button = document.getElementById('id_match_btn');
+            var text = data.id;
+            for (var i = 0; i < nav.childNodes.length; i++) {
+                var child = nav.childNodes[i];
+                if (text == child.innerText) {
+                    child.remove();
+                    list.splice((i - 1), 1);
+                    if (checkSelected()<2)
+                        button.disabled='true';
                 }
             }
-            else {
-                if (data.msg == "notice_user_removed") {
-                    var nav = document.getElementById('id_list_ul');
-                    var button = document.getElementById('id_match_btn');
-                    var text = data.id;
-                    for (var i = 0; i < nav.childNodes.length; i++) {
-                        var child = nav.childNodes[i];
-                        if (text == child.innerText) {
-                            child.remove();
-                            list.splice((i - 1), 1);
-                            if (checkSelected()<2)
-                                button.disabled='true';
-                        }
-                    }
+        }
+        else if (data.msg == "notice_board"){
+            var y=0;
+            $.each(data.board,function(){
+                for (var x=0; x<8; x++) {
+                    drawCircle(x,y,this[x]);
                 }
-                else {
-                    if (data.msg == "notice_board"){
-                        var y=0;
-                        $.each(data.board,function(){
-                            for (var x=0; x<8; x++) {
-                                drawCircle(x,y,this[x]);
-                            }
-                            y++;
-                        })
-                    }
-                }
-            }
+                y++;
+            })
         }
     }
     $('#id_match_btn').bind('click',getSelected);
