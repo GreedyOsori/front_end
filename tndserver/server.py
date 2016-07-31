@@ -56,8 +56,11 @@ class BoardHandler(tornado.web.RequestHandler):
         board.append( [int(i) for i in list(self.get_argument("line8"))] )
 
         params = dict()
-        params["msg"] = "notice_board"
-        params["board"] = board
+        game_data = dict()
+        params["msg"] = "game_data"
+        game_data["msg"] = "notice_board"
+        game_data["board"] = board
+        params["game_data"] = game_data
         reqBoard = json.dumps(params)
 
         print reqBoard

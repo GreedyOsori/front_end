@@ -44,3 +44,15 @@ function drawCircle(x,y,color){//draw stone
     }
     ctx.closePath();
 }
+
+function recvGameMsg(game_data) {
+    if (game_data.msg == "notice_board"){
+        var y=0;
+        $.each(game_data.board,function(){
+            for (var x=0; x<8; x++) {
+                drawCircle(x,y,this[x]);
+            }
+            y++;
+        })
+    }
+}

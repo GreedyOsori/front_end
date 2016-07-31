@@ -105,14 +105,8 @@ if ("WebSocket" in window) {
                 }
             }
         }
-        else if (data.msg == "notice_board"){
-            var y=0;
-            $.each(data.board,function(){
-                for (var x=0; x<8; x++) {
-                    drawCircle(x,y,this[x]);
-                }
-                y++;
-            })
+        else if (data.msg == "game_data") {
+            recvGameMsg(data.game_data);
         }
     }
     $('#id_match_btn').bind('click',getSelected);
