@@ -105,8 +105,16 @@ if ("WebSocket" in window) {
                 }
             }
         }
+        else if (data.msg == "response_match") {
+            $(".class_lobby").css("display","none");
+            $(".class_ingame").css("display","");
+        }
         else if (data.msg == "game_data") {
             recvGameMsg(data.game_data);
+            setTimeout(function(){
+                $(".class_lobby").css("display","");
+                $(".class_ingame").css("display","none");
+            },2000);
         }
     }
     $('#id_match_btn').bind('click',getSelected);
