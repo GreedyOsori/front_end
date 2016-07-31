@@ -1,3 +1,4 @@
+import os.path
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
@@ -123,8 +124,9 @@ app = tornado.web.Application([
     (r'/websocket', WebSocketHandler),
     (r'/dummy_client', DummyClientHandler),
     (r'/stone', StoneHandler),
-    (r'/board', BoardHandler),
-])
+    (r'/board', BoardHandler),],
+    static_path = os.path.join(os.path.dirname(__file__), "static"),
+)
 
 if __name__ == '__main__':
     parse_command_line()
